@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using StandardAPI.Application.Exceptions;
@@ -14,6 +13,7 @@ using System.Threading.Tasks;
 namespace StandardAPI.API.Controllers
 {
 
+    [ApiVersion("1.0")]
     public class MoviesController : BaseController
     {
         private readonly IMoviesRepository _moviesRepository;
@@ -46,6 +46,7 @@ namespace StandardAPI.API.Controllers
 
             return Ok(_movie);
         }
+
 
         [HttpPost]
         public async Task<IActionResult> CreateMovie(MovieForCreation movieForCreation)

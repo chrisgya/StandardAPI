@@ -4,8 +4,9 @@
 
 namespace StandardAPI.API.Controllers
 {
-    [ApiVersion("1.0")]
-    [Route("api/[controller]")]
+
+    //[Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
     public abstract class BaseController : ControllerBase
     {
