@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>StandardAPI.API</name>
+    </assembly>
+    <members>
+        <member name="M:StandardAPI.API.Controllers.MoviesController.GetMovies">
+            <summary>
+            Get all movies available
+            </summary>
+            <remarks>
+            This movies list would include the director name and other information
+            </remarks>
+            <returns></returns>
+        </member>
+        <member name="M:StandardAPI.API.Extensions.ServiceExtensions.ConfigureHttpRequestThrottlingByIp(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            Adds HTTP web request throttling services (a.k.a. rate limiting) via 'AspNetCoreRateLimit' library based on IP limiting.
+            </summary>
+            <remarks>ref: https://github.com/stefanprodan/AspNetCoreRateLimit/wiki</remarks>
+        </member>
+        <member name="M:StandardAPI.API.Filters.PerfTracker.#ctor(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:StandardAPI.API.Filters.PerfTracker.#ctor(System.String,System.String,System.String)">
+            <summary>
+            Creates a new PerfTracker object to track performance.  The constructor starts the
+            clock ticking.
+            </summary>
+            <param name="whatsBeingTracked">The name of the thing you're tracking performance for --
+            like API method name, procname, or whatever.</param>
+            <param name="infoName">The name of an additional value you want to capture</param>
+            <param name="infoValue">The value of the additional info you're capturing (like parameters for a method)</param>
+        </member>
+        <member name="T:StandardAPI.API.Middleware.Swagger.ConfigureSwaggerOptions">
+            <summary>
+            Configures the Swagger generation options.
+            </summary>
+            <remarks>This allows API versioning to define a Swagger document per API version after the
+            <see cref="T:Microsoft.AspNetCore.Mvc.ApiExplorer.IApiVersionDescriptionProvider"/> service has been resolved from the service container.</remarks>
+        </member>
+        <member name="M:StandardAPI.API.Middleware.Swagger.ConfigureSwaggerOptions.#ctor(Microsoft.AspNetCore.Mvc.ApiExplorer.IApiVersionDescriptionProvider)">
+            <summary>
+            Initializes a new instance of the <see cref="T:StandardAPI.API.Middleware.Swagger.ConfigureSwaggerOptions"/> class.
+            </summary>
+            <param name="provider">The <see cref="T:Microsoft.AspNetCore.Mvc.ApiExplorer.IApiVersionDescriptionProvider">provider</see> used to generate Swagger documents.</param>
+        </member>
+        <member name="M:StandardAPI.API.Middleware.Swagger.ConfigureSwaggerOptions.Configure(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions)">
+            <inheritdoc />
+        </member>
+        <member name="T:StandardAPI.API.Middleware.Swagger.SwaggerDefaultValues">
+            <summary>
+            Represents the Swagger/Swashbuckle operation filter used to document the implicit API version parameter.
+            </summary>
+            <remarks>This <see cref="T:Swashbuckle.AspNetCore.SwaggerGen.IOperationFilter"/> is only required due to bugs in the <see cref="T:Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenerator"/>.
+            Once they are fixed and published, this class can be removed.</remarks>
+        </member>
+        <member name="M:StandardAPI.API.Middleware.Swagger.SwaggerDefaultValues.Apply(Swashbuckle.AspNetCore.Swagger.Operation,Swashbuckle.AspNetCore.SwaggerGen.OperationFilterContext)">
+            <summary>
+            Applies the filter to the specified operation using the given context.
+            </summary>
+            <param name="operation">The operation to apply the filter to.</param>
+            <param name="context">The current operation filter context.</param>
+        </member>
+    </members>
+</doc>
