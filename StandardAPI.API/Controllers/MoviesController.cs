@@ -48,7 +48,17 @@ namespace StandardAPI.API.Controllers
         }
 
 
+        /// <summary>
+        /// Create a new movie
+        /// </summary>
+        /// <remarks>Make sure you have a valid director ID for the movie creation</remarks>
+        /// <param name="movieForCreation"></param>
+        /// <returns></returns>
+        /// <response code="201">Movie successfully created</response>
+        /// <response code="422">Entity validation failed</response>
+        /// <response code="400">Something went wrong. Unable to create movie.</response>
         [HttpPost]
+        [ProducesResponseType(typeof(Movie), 201)]
         public async Task<IActionResult> CreateMovie(MovieForCreation movieForCreation)
         {
             var _movie = await _moviesRepository.AddMovieAsync(movieForCreation);

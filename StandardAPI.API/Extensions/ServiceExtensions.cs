@@ -1,19 +1,30 @@
 ﻿using AspNetCoreRateLimit;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using StandardAPI.API.Filters;
 using StandardAPI.API.Middleware.Swagger;
+using StandardAPI.API.SecurityService;
 using StandardAPI.Application.Interfaces.Movies;
+using StandardAPI.Application.Interfaces.Security;
 using StandardAPI.Application.Services;
 using StandardAPI.Peristence.Contexts;
+using Swashbuckle.AspNetCore.Filters;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
+using System.Text;
 
 namespace StandardAPI.API.Extensions
 {
@@ -58,23 +69,71 @@ namespace StandardAPI.API.Extensions
             return services;
         }
 
-        public static IServiceCollection AddCustomSwagger(this IServiceCollection services)
+        public static IServiceCollection AddCustomSecurity(this IServiceCollection services)
+        {
+            var secret = Common.Utility.AppConfiguration().GetSection("JwtSettings").GetSection("Secret").Value;
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secret)),
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                RequireExpirationTime = false,
+                ValidateLifetime = true
+            };
+
+            services.AddSingleton(tokenValidationParameters);
+
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+                .AddJwtBearer(x =>
+                {
+                    x.SaveToken = true;
+                    x.TokenValidationParameters = tokenValidationParameters;
+                });
+
+            return services;
+        }
+
+            public static IServiceCollection AddCustomSwagger(this IServiceCollection services)
         {
 
             services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
             services.AddSwaggerGen(
-                options =>
-                {
-                    // add a custom operation filter which sets default values
-                    options.OperationFilter<SwaggerDefaultValues>();
+                x =>
+                {                   
+                    x.OperationFilter<SwaggerDefaultValues>();  // add a custom operation filter which sets default values
 
+                    x.ExampleFilters(); //enable swagger to show the example content in SwaggerExamples folder
+
+                    //Add JWT security
+                    x.AddSecurityDefinition("Bearer", new ApiKeyScheme
+                    {
+                        Description = "JWT Authorization header using the bearer scheme",
+                        Name = "Authorization",
+                        In = "header",
+                        Type = "apiKey"
+                    });
+
+                    x.AddSecurityRequirement(new Dictionary<string, IEnumerable<string>> { { "Bearer", new string[] { } } });
+
+                   
                     // integrate xml comments
-                    options.IncludeXmlComments(XmlCommentsFilePath.getXmlCommentsFilePath());
+                    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                    x.IncludeXmlComments(xmlPath);
 
                     //This ensures that your validator classes show the respective messages which is equivalent documentation that came with data annotations
-                    options.AddFluentValidationRules();
+                    x.AddFluentValidationRules();
                 });
 
+            //enable swagger to show the example content in SwaggerExamples folder
+            services.AddSwaggerExamplesFromAssemblyOf<Startup>();
+            
             return services;
         }
 
@@ -84,6 +143,11 @@ namespace StandardAPI.API.Extensions
             // Add MovieContext using SQL Server Provider
             services.AddDbContext<IMoviesContext, MoviesContext>();
 
+            // Add identity
+            services.AddDbContext<SecurityDbContext>();
+            services.AddDefaultIdentity<IdentityUser>()
+              .AddRoles<IdentityRole>()              
+              .AddEntityFrameworkStores<SecurityDbContext>();
 
             return services;
         }
@@ -94,6 +158,7 @@ namespace StandardAPI.API.Extensions
         {
 
             services.AddScoped<IMoviesRepository, MoviesRepository>();
+            services.AddScoped<IIdentityService, IdentityService>();
 
             return services;
         }

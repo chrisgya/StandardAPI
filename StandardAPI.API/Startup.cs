@@ -31,6 +31,8 @@ namespace StandardAPI.API
 
             services.AddCustomAPIVersioning();
 
+            services.AddCustomSecurity();
+
             services.AddCustomSwagger();
 
             services.AddHealthChecks();
@@ -72,6 +74,8 @@ namespace StandardAPI.API
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            app.UseAuthentication();
 
             // Expose the API for outer domain requests
             app.UseCors(opts =>

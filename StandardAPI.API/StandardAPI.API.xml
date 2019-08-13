@@ -13,6 +13,17 @@
             </remarks>
             <returns></returns>
         </member>
+        <member name="M:StandardAPI.API.Controllers.MoviesController.CreateMovie(StandardAPI.Application.Models.Movies.MovieForCreation)">
+            <summary>
+            Create a new movie
+            </summary>
+            <remarks>Make sure you have a valid director ID for the movie creation</remarks>
+            <param name="movieForCreation"></param>
+            <returns></returns>
+            <response code="201">Movie successfully created</response>
+            <response code="422">Entity validation failed</response>
+            <response code="400">Something went wrong. Unable to create movie.</response>
+        </member>
         <member name="M:StandardAPI.API.Extensions.ServiceExtensions.ConfigureHttpRequestThrottlingByIp(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)">
             <summary>
             Adds HTTP web request throttling services (a.k.a. rate limiting) via 'AspNetCoreRateLimit' library based on IP limiting.

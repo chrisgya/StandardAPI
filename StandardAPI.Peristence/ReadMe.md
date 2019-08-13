@@ -10,3 +10,7 @@
 #Run the following commands:
 Add-Migration InitialCreate
 Update-Database
+
+#For multiple dbContexts use
+Add-Migration InitialCreate -c NameOfDbContext
+Update-Database -c SecurityDbContext

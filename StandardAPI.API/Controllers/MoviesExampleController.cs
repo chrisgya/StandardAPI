@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using StandardAPI.Application.Interfaces.Movies;
 using StandardAPI.Application.Models.Movies;
 using System;
@@ -11,7 +13,8 @@ namespace StandardAPI.API.Controllers
 {
     [Route("api/v{version:apiVersion}/Movies")]
     [ApiVersion("2.0", Deprecated = true)]
-    [ApiVersion("2.1")]   
+    [ApiVersion("2.1")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class MoviesExampleController : BaseController
     {
         private readonly IMoviesRepository _moviesRepository;
