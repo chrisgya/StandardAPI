@@ -13,6 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 using StandardAPI.API.Filters;
 using StandardAPI.API.Middleware.Swagger;
 using StandardAPI.API.SecurityService;
+using StandardAPI.Application.Interfaces.Cache;
 using StandardAPI.Application.Interfaces.Movies;
 using StandardAPI.Application.Interfaces.Security;
 using StandardAPI.Application.Services;
@@ -145,6 +146,7 @@ namespace StandardAPI.API.Extensions
 
             // Add identity
             services.AddDbContext<SecurityDbContext>();
+
             services.AddDefaultIdentity<IdentityUser>()
               .AddRoles<IdentityRole>()              
               .AddEntityFrameworkStores<SecurityDbContext>();
@@ -219,6 +221,22 @@ namespace StandardAPI.API.Extensions
             return services;
         }
 
+
+        public static IServiceCollection AddRedisCache(this IServiceCollection services)
+        {
+            var cacheEnabled = bool.Parse(Common.Utility.AppConfiguration().GetSection("RedisCacheSettings").GetSection("Enabled").Value);
+            if (!cacheEnabled)
+            {
+                return services;
+            }
+
+            var connectionString = Common.Utility.AppConfiguration().GetSection("RedisCacheSettings").GetSection("ConnectionString").Value;
+
+            services.AddStackExchangeRedisCache(options => options.Configuration = connectionString);
+            services.AddSingleton<IResponseCacheService, ResponseCacheService>();
+
+            return services;
+        }
 
 
     }

@@ -51,6 +51,8 @@ namespace StandardAPI.API
             services.AddHttpContextAccessor();
             services.ConfigureHttpRequestThrottlingByIp(Configuration);
 
+            services.AddRedisCache();
+
             // suppress automatic model state validation when using the 
             // ApiController attribute (as it will return a 400 Bad Request
             // instead of the more correct 422 Unprocessable Entity when
